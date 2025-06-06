@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file, redirect
 import os
 import uuid
 from werkzeug.utils import secure_filename
 from tasks import process_collage
 from config import Config
+from io import BytesIO
+
 
 collage_bp = Blueprint('collage', __name__)
 
@@ -29,11 +31,28 @@ def create_task():
 def check_status():
     task_id = request.args.get('id')
     task = process_collage.AsyncResult(task_id)
-    if task.state == 'SUCCESS':
-        return jsonify({'status': 'DONE', 'collage_id': task.result})
     return jsonify({'status': task.state})
+
 
 @collage_bp.route('/get-collage', methods=['GET'])
 def get_collage():
-    collage_path = request.args.get('id')
-    return jsonify({'url': f'/{collage_path}'})
+    task_id = request.args.get('id')
+    if not task_id:
+        return jsonify({'error': 'Missing id parameter'}), 400
+
+    task = process_collage.AsyncResult(task_id)
+    if task.state != 'SUCCESS':
+        return jsonify({'error': 'Collage not ready yet'}), 404
+
+    collage_url = task.result
+    return jsonify({'url': collage_url})
+
+
+# @collage_bp.route('/download', methods=['GET'])
+# def download_collage():
+#     collage_url = request.args.get('url')
+#     if not collage_url:
+#         return jsonify({'error': 'Missing url parameter'}), 400
+
+#     # Redirect thẳng tới S3 để trình duyệt tự tải file
+#     return redirect(collage_url, code=302)
