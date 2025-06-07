@@ -1,22 +1,11 @@
-# Online_Photo_Collage_Tool
 # 📸 Online Photo Collage Tool
 
-## 📅 Mô tả dự án
+## 🗕️ Mô tả dự án
 
 Dự án tạo một công cụ trực tuyến cho phép người dùng tải lên nhiều hình ảnh và tự động tạo ra một tấm collage (hình ghép). Sử dụng:
 
 * **Backend**: Flask + Celery + S3
 * **Frontend**: React + Vite
-
----
-
-## 📊 Yêu cầu
-
-* Python >= 3.9
-* Node.js >= 16
-* Tài khoản AWS + S3 bucket
-
----
 
 ---
 
@@ -64,7 +53,16 @@ cd ../frontend
 npm install
 ```
 
-### 4. Chạy backend
+### 4. Cài đặt Redis qua Docker
+
+Redis cần thiết cho Celery:
+
+```bash
+docker run -d -p 6379:6379 --name redis redis
+```
+
+
+### 5. Chạy backend
 
 ```bash
 cd ../backend
@@ -72,7 +70,7 @@ venv\Scripts\activate
 flask run
 ```
 
-### 5. Chạy Celery worker
+### 6. Chạy Celery worker
 
 Mở terminal mới:
 
@@ -82,7 +80,7 @@ venv\Scripts\activate
 celery -A celery_worker.celery worker --loglevel=info
 ```
 
-### 6. Chạy frontend
+### 7. Chạy frontend
 
 ```bash
 cd frontend
@@ -118,10 +116,18 @@ Online-Photo-Collage-Tool/
 |— .gitignore
 ```
 
+---
 
+## 📊 Yêu cầu
 
+* Python >= 3.9
+* Node.js >= 16
+* Docker 
+* Tài khoản AWS + S3 bucket
 
 ---
+
+
 
 ## ✉️ Liên hệ
 

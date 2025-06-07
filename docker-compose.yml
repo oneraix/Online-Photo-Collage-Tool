@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/temp/collages:/app/temp/collage
+      - ./backend/temp/uploads:/app/temp/uploads
+    environment:
+      - FLASK_ENV=development
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - S3_BUCKET_NAME=${S3_BUCKET}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  celery:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: celery
+    command: celery -A celery_worker.celery worker --loglevel=info
+    volumes:
+      - ./backend/temp/uploads:/app/temp/uploads
+      - ./backend/temp/collages:/app/temp/collages
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - S3_BUCKET=${S3_BUCKET}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - backend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
