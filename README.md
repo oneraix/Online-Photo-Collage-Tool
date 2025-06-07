@@ -10,6 +10,16 @@ Dự án tạo một công cụ trực tuyến cho phép người dùng tải l�
 
 ---
 
+## 📊 Yêu cầu
+
+* Python >= 3.9
+* Node.js >= 16
+* Tài khoản AWS + S3 bucket
+
+---
+
+---
+
 ## ✨ Tính năng
 
 * Tải lên nhiều hình ảnh
@@ -108,15 +118,7 @@ Online-Photo-Collage-Tool/
 |— .gitignore
 ```
 
----
 
-## 📊 Yêu cầu
-
-* Python >= 3.9
-* Node.js >= 16
-* Tài khoản AWS + S3 bucket
-
----
 
 
 ---
