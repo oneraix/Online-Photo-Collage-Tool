@@ -10,6 +10,16 @@ Dự án tạo một công cụ trực tuyến cho phép người dùng tải l�
 
 ---
 
+## 📊 Yêu cầu
+
+* Python >= 3.9
+* Node.js >= 16
+* Tài khoản AWS + S3 bucket
+
+---
+
+---
+
 ## ✨ Tính năng
 
 * Tải lên nhiều hình ảnh
@@ -108,35 +118,8 @@ Online-Photo-Collage-Tool/
 |— .gitignore
 ```
 
----
 
-## 📊 Yêu cầu
 
-* Python >= 3.9
-* Node.js >= 16
-* Tài khoản AWS + S3 bucket
-
----
-
-## 🔍 Gợi ý .gitignore
-
-```gitignore
-# Python
-__pycache__/
-*.pyc
-venv/
-.env
-
-# Tạm và ảnh sinh ra
-backend/temp/
-backend/static/collages/
-*.jpg
-*.png
-
-# Node.js
-frontend/node_modules/
-frontend/dist/
-```
 
 ---
 
