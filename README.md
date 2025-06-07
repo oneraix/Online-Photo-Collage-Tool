@@ -118,25 +118,6 @@ Online-Photo-Collage-Tool/
 
 ---
 
-## 🔍 Gợi ý .gitignore
-
-```gitignore
-# Python
-__pycache__/
-*.pyc
-venv/
-.env
-
-# Tạm và ảnh sinh ra
-backend/temp/
-backend/static/collages/
-*.jpg
-*.png
-
-# Node.js
-frontend/node_modules/
-frontend/dist/
-```
 
 ---
 
