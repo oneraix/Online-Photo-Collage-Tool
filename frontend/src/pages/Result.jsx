@@ -9,7 +9,7 @@ export default function Result() {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/get-collage?id=${taskId}`)
+        const res = await fetch(`http://16.176.17.132:5000/api/get-collage?id=${taskId}`)
         const data = await res.json()
         if (data.url) {
           setCollageUrl(data.url)
