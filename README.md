@@ -1,134 +1,123 @@
+
 # 📸 Online Photo Collage Tool
 
 ## 🗕️ Mô tả dự án
 
-Dự án tạo một công cụ trực tuyến cho phép người dùng tải lên nhiều hình ảnh và tự động tạo ra một tấm collage (hình ghép). Sử dụng:
+**Online Photo Collage Tool** là một ứng dụng web cho phép người dùng tải lên nhiều hình ảnh và tự động tạo ra một tấm **collage (hình ghép)**. Dự án sử dụng:
 
-* **Backend**: Flask + Celery + S3
-* **Frontend**: React + Vite
-
----
-
-## ✨ Tính năng
-
-* Tải lên nhiều hình ảnh
-* Tự động tạo collage
-* Lưu trữ trên AWS S3
-* Tự động dọn file tạm (sau 1 ngày)
+- 🔧 **Backend**: Flask + Celery + AWS S3  
+- 💻 **Frontend**: React + Vite  
+- 🐳 **Triển khai**: Docker + Docker Compose  
+- ⚙️ **Queue**: Redis (cho Celery)
 
 ---
 
-## ⚙️ Cài đặt khi clone về
+## ✨ Tính năng chính
+
+- ✅ Tải lên nhiều hình ảnh  
+- 🧠 Tự động ghép ảnh thành collage  
+- ☁️ Lưu trữ kết quả trên AWS S3  
+- 🧹 Tự động dọn file tạm sau 1 ngày (qua Celery)  
+- 🖼️ Giao diện đơn giản, dễ sử dụng
+
+---
+
+## 🚀 Truy cập sau khi deploy
+
+- 🌐 **Frontend**: [http://16.176.17.132:5173](http://16.176.17.132:5173)  
+- 🔗 **Backend API**: [http://16.176.17.132:5000](http://16.176.17.132:5000)
+
+> 📦 Sau khi deploy trên server, thay `localhost` bằng địa chỉ IP hoặc domain của bạn.
+
+---
+
+## ⚙️ Cài đặt & chạy dự án bằng Docker
 
 ### 1. Clone project
 
 ```bash
-git clone https://github.com/<ten-user>/<ten-repo>.git
+git clone https://github.com/<your-username>/<your-repo>.git
 cd Online-Photo-Collage-Tool
 ```
 
-### 2. Cài backend
-
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # macOS/Linux
-pip install -r requirements.txt
-```
-
-Tạo file `.env` trong thư mục `backend/`:
+### 2. Tạo file `.env` trong thư mục `backend/`
 
 ```env
 FLASK_ENV=development
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_REGION=your-region
 S3_BUCKET=your-bucket-name
 ```
 
-### 3. Cài frontend
+### 3. Khởi động toàn bộ hệ thống
 
 ```bash
-cd ../frontend
-npm install
+docker-compose up --build
 ```
 
-### 4. Cài đặt Redis qua Docker
+Docker sẽ khởi chạy:
 
-Redis cần thiết cho Celery:
-
-```bash
-docker run -d -p 6379:6379 --name redis redis
-```
-
-
-### 5. Chạy backend
-
-```bash
-cd ../backend
-venv\Scripts\activate
-flask run
-```
-
-### 6. Chạy Celery worker
-
-Mở terminal mới:
-
-```bash
-cd backend
-venv\Scripts\activate
-celery -A celery_worker.celery worker --loglevel=info
-```
-
-### 7. Chạy frontend
-
-```bash
-cd frontend
-npm run dev
-```
+- Redis server  
+- Flask backend  
+- Celery worker  
+- React frontend
 
 ---
 
-## 📁 Cấu trúc thư mục
+## 🐳 Cấu trúc Docker Compose (Tóm tắt)
+
+```yaml
+services:
+  redis: Redis queue
+  backend: Flask API + upload xử lý ảnh
+  celery: Worker xử lý ghép ảnh
+  frontend: React + Vite hiển thị giao diện người dùng
+```
+
+Xem chi tiết cấu hình trong file `docker-compose.yml`.
+
+---
+
+## 📁 Cấu trúc thư mục dự án
 
 ```
 Online-Photo-Collage-Tool/
-|
-|— backend/
-|   |— app.py
-|   |— celery_worker.py
-|   |— tasks.py
-|   |— config.py
-|   |— .env
-|   |— routes/
-|   |— static/
-|   |— temp/
-|   — utils/
-|
-|— frontend/
-|   |— node_modules/
-|   |— public/
-|   |— src/
-|   |— package.json
-|   — vite.config.js
-|
-|— README.md
-|— .gitignore
+│
+├── backend/
+│   ├── app.py                # Main Flask app
+│   ├── celery_worker.py      # Celery worker config
+│   ├── tasks.py              # Xử lý ghép ảnh
+│   ├── config.py             # Cấu hình môi trường
+│   ├── routes/               # API routes
+│   ├── static/               # Static files (nếu có)
+│   ├── temp/                 # Thư mục ảnh tạm (upload + output)
+│   ├── utils/                # Hàm xử lý phụ trợ
+│   └── .env                  # Biến môi trường (không commit)
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── docker-compose.yml
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-## 📊 Yêu cầu
+## 📊 Yêu cầu hệ thống
 
-* Python >= 3.9
-* Node.js >= 16
-* Docker 
-* Tài khoản AWS + S3 bucket
+- Python >= 3.9  
+- Node.js >= 16  
+- Docker & Docker Compose  
+- Tài khoản AWS + S3 Bucket
 
 ---
 
-
-
 ## ✉️ Liên hệ
 
-Nếu bạn có bất kỳ câu hỏi nào, vui lòng tạo issue hoặc pull request trên GitHub. Chúc bạn cài đặt thành công! ✨
+Nếu bạn có bất kỳ câu hỏi hoặc ý tưởng đóng góp, vui lòng tạo issue hoặc gửi pull request trên GitHub.  
+Chúc bạn cài đặt thành công và sử dụng vui vẻ! ✨
