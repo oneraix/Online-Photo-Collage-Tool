@@ -13,10 +13,7 @@ export default function Home() {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files)
     const newImages = [...images, ...files]
-    const newPreviews = [
-      ...previews,
-      ...files.map(file => URL.createObjectURL(file))
-    ]
+    const newPreviews = [...previews, ...files.map(file => URL.createObjectURL(file))]
     setImages(newImages)
     setPreviews(newPreviews)
   }
@@ -69,7 +66,6 @@ export default function Home() {
         <form onSubmit={handleSubmit} className="w-full md:w-1/3 p-6 border-r space-y-5">
           <h2 className="text-blue-600 font-semibold mb-2">📤 Tải ảnh lên</h2>
 
-          {/* Nút chọn ảnh tiếng Việt */}
           <div className="space-y-2">
             <input
               id="fileInput"
@@ -87,7 +83,6 @@ export default function Home() {
             </label>
           </div>
 
-          {/* Preview file name list + nút xóa */}
           <ul className="space-y-2 text-sm">
             {images.map((img, i) => (
               <li key={i} className="flex items-center gap-2 text-gray-700">
@@ -150,25 +145,23 @@ export default function Home() {
         {/* Right panel - Preview */}
         <div className="flex-1 p-6 bg-gray-100 flex flex-col items-center justify-center">
           {previews.length > 0 ? (
-            <>
-              <div className="bg-white p-4 rounded shadow mb-4">
-                <div className={`flex ${mode === 'vertical' ? 'flex-col' : 'flex-row'} gap-${borderSize}`}>
-                  {previews.map((url, i) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`preview-${i}`}
-                      className="w-32 h-32 object-cover rounded border"
-                      style={{
-                        borderColor: borderColor,
-                        borderWidth: `${borderSize}px`,
-                        borderStyle: "solid"
-                      }}
-                    />
-                  ))}
-                </div>
+            <div className="bg-white p-4 rounded shadow mb-4 max-h-[400px] overflow-auto">
+              <div className={`flex ${mode === 'vertical' ? 'flex-col' : 'flex-row'} flex-wrap justify-center gap-4`}>
+                {previews.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt={`preview-${i}`}
+                    className="max-w-[180px] max-h-[180px] object-contain rounded border"
+                    style={{
+                      borderColor: borderColor,
+                      borderWidth: `${borderSize}px`,
+                      borderStyle: "solid"
+                    }}
+                  />
+                ))}
               </div>
-            </>
+            </div>
           ) : (
             <p className="text-gray-500 text-sm">Chưa có ảnh xem trước.</p>
           )}
