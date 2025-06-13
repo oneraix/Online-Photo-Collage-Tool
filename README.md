@@ -24,8 +24,8 @@
 
 ## 🚀 Truy cập sau khi deploy
 
-- 🌐 **Frontend**: [http://16.176.17.132:5173](http://16.176.17.132:5173)  
-- 🔗 **Backend API**: [http://16.176.17.132:5000](http://16.176.17.132:5000)
+- 🌐 **Frontend**: [http://54.206.115.235:5173](http://54.206.115.235:5173)  
+- 🔗 **Backend API**: [http://54.206.115.235:5000](http://54.206.115.235:5000)
 
 > 📦 Sau khi deploy trên server, thay `localhost` bằng địa chỉ IP hoặc domain của bạn.
 
