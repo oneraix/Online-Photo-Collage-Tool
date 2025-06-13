@@ -33,7 +33,11 @@ def process_collage(self, image_paths, mode, border_size, border_color):
     upload_to_s3(local_path, s3_key)
     s3_url = generate_presigned_url(s3_key)
 
-    return s3_url
+    return {    
+"url": s3_url,
+    "border_color": border_color,
+                }
+
 
 
 

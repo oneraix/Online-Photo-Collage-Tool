@@ -44,8 +44,8 @@ def get_collage():
     if task.state != 'SUCCESS':
         return jsonify({'error': 'Collage not ready yet'}), 404
 
-    collage_url = task.result
-    return jsonify({'url': collage_url})
+    result = task.result  # Đây là dict trả về từ task
+    return jsonify(result)
 
 
 # @collage_bp.route('/download', methods=['GET'])

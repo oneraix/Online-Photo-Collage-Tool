@@ -12,81 +12,125 @@ export default function Home() {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files)
-    setImages(files)
-    const previewUrls = files.map(file => URL.createObjectURL(file))
-    setPreviews(previewUrls)
+    const newImages = [...images, ...files]
+    const newPreviews = [
+      ...previews,
+      ...files.map(file => URL.createObjectURL(file))
+    ]
+    setImages(newImages)
+    setPreviews(newPreviews)
   }
 
-const handleSubmit = async (e) => {
-  e.preventDefault()
-  if (images.length === 0) return alert("Hãy chọn ảnh.")
-
-  const formData = new FormData()
-  images.forEach(img => formData.append("images", img))
-  formData.append("mode", mode)
-  formData.append("border_size", borderSize)
-  formData.append("border_color", borderColor)
-
-  try {
-    const taskId = await createTask(formData)
-    console.log("Task ID:", taskId)
-    navigate(`/processing/${taskId}`)
-  } catch (err) {
-    console.error("Lỗi tạo task:", err)
+  const handleRemoveImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index)
+    const newPreviews = previews.filter((_, i) => i !== index)
+    setImages(newImages)
+    setPreviews(newPreviews)
   }
-}
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (images.length === 0) {
+      alert("📷 Hãy chọn ít nhất một ảnh.")
+      return
+    }
+
+    if (borderSize === "" || isNaN(borderSize)) {
+      alert("📏 Vui lòng nhập kích cỡ viền.")
+      return
+    }
+
+    const border = parseInt(borderSize)
+    if (border < 0 || border > 1000) {
+      alert("📏 Kích cỡ viền phải nằm trong khoảng từ 0 đến 1000.")
+      return
+    }
+
+    const formData = new FormData()
+    images.forEach(img => formData.append("images", img))
+    formData.append("mode", mode)
+    formData.append("border_size", border)
+    formData.append("border_color", borderColor)
+
+    try {
+      const taskId = await createTask(formData)
+      navigate(`/processing/${taskId}`)
+    } catch (err) {
+      console.error("Lỗi tạo task:", err)
+      alert("❌ Có lỗi xảy ra khi gửi yêu cầu.")
+    }
+  }
 
   return (
-    
     <div className="min-h-screen bg-[#f7f9fc] flex items-center justify-center px-4 py-8">
       <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row overflow-hidden w-full max-w-6xl">
         {/* Left panel */}
         <form onSubmit={handleSubmit} className="w-full md:w-1/3 p-6 border-r space-y-5">
-          <h2 className="text-blue-600 font-semibold mb-2">📤 Upload Image</h2>
+          <h2 className="text-blue-600 font-semibold mb-2">📤 Tải ảnh lên</h2>
 
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-            className="block w-full text-sm text-gray-600"
-          />
+          {/* Nút chọn ảnh tiếng Việt */}
+          <div className="space-y-2">
+            <input
+              id="fileInput"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="fileInput"
+              className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 inline-block"
+            >
+              📁 Chọn ảnh từ máy
+            </label>
+          </div>
 
-          {/* Preview file name list */}
-          <ul className="space-y-1 text-sm">
+          {/* Preview file name list + nút xóa */}
+          <ul className="space-y-2 text-sm">
             {images.map((img, i) => (
               <li key={i} className="flex items-center gap-2 text-gray-700">
                 <img src={previews[i]} className="w-6 h-6 object-cover rounded" />
-                {img.name}
+                <span className="flex-1 truncate">{img.name}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(i)}
+                  className="text-red-500 hover:text-red-700"
+                  title="Xóa ảnh"
+                >
+                  ❌
+                </button>
               </li>
             ))}
           </ul>
 
           <div className="pt-2 border-t">
-            <label className="block mb-2 font-medium text-gray-700">📐 Layout</label>
+            <label className="block mb-2 font-medium text-gray-700">📐 Kiểu ghép</label>
             <label className="flex items-center gap-2 mb-1">
               <input type="radio" value="horizontal" checked={mode === 'horizontal'} onChange={() => setMode("horizontal")} />
-              Horizontal collage
+              Ghép ảnh ngang
             </label>
             <label className="flex items-center gap-2">
               <input type="radio" value="vertical" checked={mode === 'vertical'} onChange={() => setMode("vertical")} />
-              Vertical collage
+              Ghép ảnh dọc
             </label>
           </div>
 
           <div>
-            <label className="block font-medium text-gray-700 mb-1">📏 Border</label>
+            <label className="block font-medium text-gray-700 mb-1">📏 Kích cỡ viền</label>
             <input
               type="number"
               className="w-full px-3 py-1.5 border rounded"
               value={borderSize}
               onChange={(e) => setBorderSize(e.target.value)}
+              min={0}
+              max={1000}
             />
           </div>
 
           <div>
-            <label className="block font-medium text-gray-700 mb-1">🎨 Color</label>
+            <label className="block font-medium text-gray-700 mb-1">🎨 Màu viền</label>
             <input
               type="color"
               className="w-full h-10 rounded"
@@ -99,7 +143,7 @@ const handleSubmit = async (e) => {
             type="submit"
             className="bg-blue-500 text-white py-2 rounded w-full hover:bg-blue-600 font-semibold"
           >
-            Make Collage
+            Tạo ảnh ghép
           </button>
         </form>
 
@@ -115,7 +159,11 @@ const handleSubmit = async (e) => {
                       src={url}
                       alt={`preview-${i}`}
                       className="w-32 h-32 object-cover rounded border"
-                      style={{ borderColor: borderColor, borderWidth: `${borderSize}px`, borderStyle: "solid" }}
+                      style={{
+                        borderColor: borderColor,
+                        borderWidth: `${borderSize}px`,
+                        borderStyle: "solid"
+                      }}
                     />
                   ))}
                 </div>
