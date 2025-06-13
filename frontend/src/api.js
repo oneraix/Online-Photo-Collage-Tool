@@ -2,7 +2,7 @@ import axios from 'axios'
 
 //const BASE_URL = 'http://localhost:5000/api'
 
-const BASE_URL = 'http://16.176.17.132:5000/api'
+const BASE_URL = 'http://54.206.115.235:5000/api'
 export const createTask = async (formData) => {
   const res = await axios.post(`${BASE_URL}/create-task`, formData)
   return res.data.task_id
